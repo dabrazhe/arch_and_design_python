@@ -18,7 +18,7 @@ class SomeDomainServiceBizLogic(object):
 
     setA = frozenset([])
     setB = frozenset([])
-
+    operationResult = frozenset([])
     # setB = []   # what do you think is better to define an non init set?
 
     def __init__(self, setA, setB):
@@ -26,6 +26,8 @@ class SomeDomainServiceBizLogic(object):
 
         self.setA = setA
         self.setB = setB
+
+
 
         # Let's validate our input data first. Using the logic, the string cannot be empty.
         if not (setA & setB):
@@ -37,6 +39,26 @@ class SomeDomainServiceBizLogic(object):
         # remove this side effect from the actual implementation
         print getdoc(self)
         print getdoc(getattr(self, getframeinfo(currentframe()).function))
+
+        def __setattr__(self, *args):
+            raise TypeError
+
+        def __getattr__(self, *args):
+            raise TypeError
+
+
+    # some memory mgmt idea, have not though through it yet -- DA
+    def getresult(self):
+
+        if (self.operationResult <> None) & (self.operationResult.__sizeof__() > 10):
+            return "The object too big for memory, rerequest operation"
+        else:
+            return self.operationResult
+
+    def intersect(self):
+        return self.setA.intersection(self.setB)
+
+
 
 
 class SomeAtomicSetType(object):
@@ -50,9 +72,9 @@ class TestStringMethods(unittest.TestCase):
 
 
         set1a = set([1, 2, 3, 4, 100, 200, 1000])
-        set1b = frozenset ([100, 200, 400, 500])    
+        set1b = frozenset ([100, 200, 400, 500])
+
         print str(set1a)
-        print (', '.join(str(e) for e in set1a))
         print (', '.join(str(e) for e in set1b))
         # for x in set1b:
         #     x.
@@ -60,25 +82,23 @@ class TestStringMethods(unittest.TestCase):
 
 
         bizLogic = SomeDomainServiceBizLogic(set1a,set1b )
-        importer = ImporterCore("https://gator3154.hostgator.com:2083/cpsess0910541571/frontend/x3/index.php?login=1&post_login=22462794788126",[1,2])
 
 
 
-        #importer.uri = "http://"
+
         #will not work with immutable object
-        #importer.credentials = "TestCreds"
-        #importer.__setattr__(self, "credentials", ["wouou!","\n Override!!"])
-        print importer.credential_check()
+        #bizLogic.credentials = "TestCreds"
+        #bizLogic.__setattr__(self, "credentials", ["wouou!","\n Override!!"])
 
-        self.assertTrue(urlparse(importer.uri))
+        bizLogic.getresult()
 
-        for r in urlparse(importer.uri):
 
-            print "url\t"+ r
-            self.assertTrue(r)
-        print self.credentials
+        self.assertTrue((bizLogic.getresult()))
+        self.assertEqual(bizLogic.intersect(), set1a.intersection(set1b))
 
-        self.assertEqual(isinstance(importer.uri, str), True)
+        self.assertEqual(bizLogic.intersect(),([100, 200]))
+
+        self.assertEqual(isinstance(bizLogic.getresult(), str), False)
         self.assertRaises(TypeError)
 
     def test_upper(self):
@@ -89,7 +109,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertFalse('Foo'.isupper())
 
     def test_split(self):
-        s = 'hello world '
+        s = 'hello world'
         self.assertEqual(s.split(), ['hello', 'world'])
         # check that s.split fails when the separator is not a string
         with self.assertRaises(TypeError):
@@ -110,43 +130,4 @@ if __name__ == '__main__':
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
         '''
 
-class ImporterCore(object):
-    __doc = """Guten Tag. A sample Importer Core class here. I'm tres tres simple"""
-    # string
-    uri = ''
-    credentials = None
-     # call endpoint with credentials
-    def credential_check(self):
-        result = "200 OK"
-        return result
-    def exampleofBuzLogic(self):
-        return md5(self.credentials)
 
-    # def __init__
-    def __init__(self, url, credentials):
-        """Constructor: Object created as immutable (value for some) object, by using settatr on all the public properties. Yes, python has only public properies.. """
-
-        # Let's validate our input data first. Using the logic, the string cannot be empty.
-
-
-
-        print getdoc(self)
-        print getdoc(getattr(self, getframeinfo(currentframe()).function))
-
-        object.__setattr__(self, "uri", url)
-        object.__setattr__(self, "credentials", credentials)
-
-
-        print self
-
-        for r in urlparse(self.uri):
-            print "url\t"+ r
-
-        print self.credentials
-        print "_____________\n"
-
-    def __setattr__(self, *args):
-        raise TypeError
-
-    def __getattr__(self, *args):
-        raise TypeError
