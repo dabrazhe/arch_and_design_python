@@ -50,7 +50,7 @@ class TestStringMethods(unittest.TestCase):
 
 
         set1a = set([1, 2, 3, 4, 100, 200, 1000])
-        set1b = frozenset ([100, 200, 400, 500])
+        set1b = frozenset ([100, 200, 400, 500])    
         print str(set1a)
         print (', '.join(str(e) for e in set1a))
         print (', '.join(str(e) for e in set1b))
