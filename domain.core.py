@@ -63,7 +63,7 @@ class SomeDomainServiceBizLogic(object):
         # if (self.operationResult <> None) & (self.operationResult.__sizeof__() > 10):
         #     raise ValueError
         # else:
-            return self.operationResult
+        return self.operationResult
 
     def intersect(self):
         return self.setA.intersection(self.setB)
